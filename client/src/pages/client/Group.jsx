@@ -1,135 +1,272 @@
 import React, { useState } from 'react';
-
-const staticGroup = {
-  name: 'MURAi Study Group',
-  code: 'ABC123',
-  members: [
-    {
-      name: 'Juan Dela Cruz',
-      email: 'juan@email.com',
-      role: 'Owner',
-      joined: '2024-05-01',
-      detections: 12,
-      lastActivity: '2024-06-01 10:32',
-    },
-    {
-      name: 'Maria Santos',
-      email: 'maria@email.com',
-      role: 'Member',
-      joined: '2024-05-03',
-      detections: 7,
-      lastActivity: '2024-05-31 19:40',
-    },
-    {
-      name: 'Pedro Reyes',
-      email: 'pedro@email.com',
-      role: 'Member',
-      joined: '2024-05-10',
-      detections: 4,
-      lastActivity: '2024-05-30 18:05',
-    },
-  ],
-};
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Table,
+  TableHeader,
+  TableBody,
+  TableHead,
+  TableRow,
+  TableCell,
+} from "@/components/ui/table";
+import { Card } from "@/components/ui/card";
+import { FiPlus, FiUserPlus, FiUsers, FiCalendar, FiStar } from "react-icons/fi";
 
 export default function Group() {
-  const [inGroup] = useState(true); // static: user is NOT in a group
-  const [showCreate, setShowCreate] = useState(false);
-  const [showJoin, setShowJoin] = useState(false);
+  // Static group data
+  const [groups] = useState([
+    {
+      id: 1,
+      name: "Development Team",
+      memberCount: 8,
+      userRole: "Admin",
+      createdAt: "Mar 15, 2024"
+    },
+    {
+      id: 2,
+      name: "Marketing Team",
+      memberCount: 12,
+      userRole: "Member",
+      createdAt: "Mar 10, 2024"
+    },
+    {
+      id: 3,
+      name: "Design Team",
+      memberCount: 6,
+      userRole: "Admin",
+      createdAt: "Mar 5, 2024"
+    },
+    {
+      id: 4,
+      name: "Product Team",
+      memberCount: 15,
+      userRole: "Member",
+      createdAt: "Feb 28, 2024"
+    },
+    {
+      id: 5,
+      name: "QA Team",
+      memberCount: 4,
+      userRole: "Moderator",
+      createdAt: "Feb 20, 2024"
+    }
+  ]);
+  const [isCreateGroupModalOpen, setIsCreateGroupModalOpen] = useState(false);
+  const [isJoinGroupModalOpen, setIsJoinGroupModalOpen] = useState(false);
+
+  if (groups.length === 0) {
+    return (
+      <div className="p-6 max-w-6xl mx-auto">
+        <Card className="border border-zinc-200 shadow-sm rounded-xl overflow-hidden">
+          <div className="flex flex-col items-center justify-center py-16 px-4">
+            <div className="h-12 w-12 bg-zinc-100 rounded-full flex items-center justify-center mb-4">
+              <FiUsers className="h-6 w-6 text-zinc-600" />
+            </div>
+            <h2 className="text-xl font-semibold text-zinc-900 mb-2">No Groups Found</h2>
+            <p className="text-zinc-500 text-center max-w-md mb-8">
+              You are not a member of any group yet. Create a new group or join an existing one to get started.
+            </p>
+            <div className="flex gap-3">
+              <Dialog open={isCreateGroupModalOpen} onOpenChange={setIsCreateGroupModalOpen}>
+                <DialogTrigger asChild>
+                  <Button variant="default" className="flex items-center gap-2">
+                    <FiPlus className="h-4 w-4" />
+                    Create New Group
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="bg-white sm:max-w-[425px]">
+                  <DialogHeader>
+                    <DialogTitle className="text-xl font-semibold text-zinc-900">Create Group</DialogTitle>
+                  </DialogHeader>
+                  <div className="mt-6">
+                    <div className="space-y-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="groupName" className="text-sm font-medium text-zinc-700">
+                          Group Name
+                        </Label>
+                        <Input
+                          id="groupName"
+                          placeholder="Enter your group name"
+                          className="w-full"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex justify-end mt-6">
+                    <Button type="submit" className="w-full sm:w-auto">Create Group</Button>
+                  </div>
+                </DialogContent>
+              </Dialog>
+
+              <Dialog open={isJoinGroupModalOpen} onOpenChange={setIsJoinGroupModalOpen}>
+                <DialogTrigger asChild>
+                  <Button variant="outline" className="flex items-center gap-2">
+                    <FiUserPlus className="h-4 w-4" />
+                    Join Group
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="bg-white sm:max-w-[425px]">
+                  <DialogHeader>
+                    <DialogTitle className="text-xl font-semibold text-zinc-900">Join Group</DialogTitle>
+                  </DialogHeader>
+                  <div className="mt-6">
+                    <div className="space-y-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="groupCode" className="text-sm font-medium text-zinc-700">
+                          Group Code
+                        </Label>
+                        <Input
+                          id="groupCode"
+                          placeholder="Enter the group code"
+                          className="w-full"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex justify-end mt-6">
+                    <Button type="submit" className="w-full sm:w-auto">Join Group</Button>
+                  </div>
+                </DialogContent>
+              </Dialog>
+            </div>
+          </div>
+        </Card>
+      </div>
+    );
+  }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-200 py-8 px-2 md:px-8">
-      <div className="max-w-4xl mx-auto">
-        <h2 className="text-3xl font-bold mb-8 text-slate-800 text-center">Group Management</h2>
-        {/* Create/Join Group */}
-        {!inGroup && (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
-            <div className="bg-white rounded-xl shadow p-8 flex flex-col items-center">
-              <div className="text-2xl font-bold mb-2">Create Group</div>
-              <div className="text-slate-500 mb-4 text-center">Start a new group and invite members.</div>
-              <button onClick={() => setShowCreate(true)} className="bg-indigo-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-indigo-700 transition">Create</button>
-            </div>
-            <div className="bg-white rounded-xl shadow p-8 flex flex-col items-center">
-              <div className="text-2xl font-bold mb-2">Join Group</div>
-              <div className="text-slate-500 mb-4 text-center">Join an existing group using a code.</div>
-              <button onClick={() => setShowJoin(true)} className="bg-indigo-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-indigo-700 transition">Join</button>
-            </div>
-          </div>
-        )}
-        {/* Modals (static placeholder) */}
-        {showCreate && (
-          <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50">
-            <div className="bg-white rounded-xl shadow-lg p-8 w-full max-w-md">
-              <div className="text-xl font-bold mb-4">Create Group</div>
-              <div className="mb-4">[Static form placeholder]</div>
-              <button onClick={() => setShowCreate(false)} className="bg-slate-200 px-4 py-2 rounded-lg">Close</button>
-            </div>
-          </div>
-        )}
-        {showJoin && (
-          <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50">
-            <div className="bg-white rounded-xl shadow-lg p-8 w-full max-w-md">
-              <div className="text-xl font-bold mb-4">Join Group</div>
-              <div className="mb-4">[Static form placeholder]</div>
-              <button onClick={() => setShowJoin(false)} className="bg-slate-200 px-4 py-2 rounded-lg">Close</button>
-            </div>
-          </div>
-        )}
-        {/* Group Info & Members */}
-        {inGroup && (
-          <div className="bg-white rounded-xl shadow p-6 mb-8">
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6 gap-4">
-              <div>
-                <div className="text-xl font-bold text-indigo-700">{staticGroup.name}</div>
-                <div className="text-slate-500">Group Code: <span className="font-mono bg-slate-100 px-2 py-1 rounded">{staticGroup.code}</span></div>
+    <div className="p-6 max-w-6xl mx-auto">
+      <div className="flex justify-between items-center mb-8">
+        <div>
+          <h1 className="text-2xl font-semibold text-zinc-900">My Groups</h1>
+          <p className="text-sm text-zinc-500 mt-1">Manage and view your groups</p>
+        </div>
+        <div className="flex gap-3">
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button variant="default" className="flex items-center gap-2">
+                <FiPlus className="h-4 w-4" />
+                Create New Group
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="bg-white sm:max-w-[425px]">
+              <DialogHeader>
+                <DialogTitle className="text-xl font-semibold text-zinc-900">Create Group</DialogTitle>
+              </DialogHeader>
+              <div className="mt-6">
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="groupName" className="text-sm font-medium text-zinc-700">
+                      Group Name
+                    </Label>
+                    <Input
+                      id="groupName"
+                      placeholder="Enter your group name"
+                      className="w-full"
+                    />
+                  </div>
+                </div>
               </div>
-              <button className="bg-rose-100 text-rose-700 px-4 py-2 rounded-lg font-semibold hover:bg-rose-200 transition mt-2 md:mt-0">Leave Group</button>
-            </div>
-            <div className="overflow-x-auto">
-              <table className="min-w-full text-left text-sm mb-6">
-                <thead>
-                  <tr className="bg-slate-100">
-                    <th className="py-2 px-3 font-semibold text-slate-600">Name</th>
-                    <th className="py-2 px-3 font-semibold text-slate-600">Email</th>
-                    <th className="py-2 px-3 font-semibold text-slate-600">Role</th>
-                    <th className="py-2 px-3 font-semibold text-slate-600">Joined</th>
-                    <th className="py-2 px-3 font-semibold text-slate-600">Total Detections</th>
-                    <th className="py-2 px-3 font-semibold text-slate-600">Last Activity</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {staticGroup.members.map((m, idx) => (
-                    <tr key={idx} className="border-b last:border-b-0">
-                      <td className="py-2 px-3 font-medium">{m.name}</td>
-                      <td className="py-2 px-3">{m.email}</td>
-                      <td className="py-2 px-3">
-                        <span className={m.role === 'Owner' ? 'bg-indigo-100 text-indigo-700 px-2 py-1 rounded-full' : 'bg-slate-100 text-slate-700 px-2 py-1 rounded-full'}>{m.role}</span>
-                      </td>
-                      <td className="py-2 px-3">{m.joined}</td>
-                      <td className="py-2 px-3 text-center">{m.detections}</td>
-                      <td className="py-2 px-3">{m.lastActivity}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-            {/* Analytics summary for group (static) */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
-              <div className="bg-indigo-50 rounded-lg p-4 flex flex-col items-center">
-                <div className="text-2xl font-bold text-indigo-700">{staticGroup.members.reduce((a, b) => a + b.detections, 0)}</div>
-                <div className="text-slate-600">Total Detections</div>
+              <div className="flex justify-end mt-6">
+                <Button type="submit" className="w-full sm:w-auto">Create Group</Button>
               </div>
-              <div className="bg-green-50 rounded-lg p-4 flex flex-col items-center">
-                <div className="text-2xl font-bold text-green-700">{staticGroup.members.length}</div>
-                <div className="text-slate-600">Members</div>
+            </DialogContent>
+          </Dialog>
+
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button variant="outline" className="flex items-center gap-2">
+                <FiUserPlus className="h-4 w-4" />
+                Join Group
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="bg-white sm:max-w-[425px]">
+              <DialogHeader>
+                <DialogTitle className="text-xl font-semibold text-zinc-900">Join Group</DialogTitle>
+              </DialogHeader>
+              <div className="mt-6">
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="groupCode" className="text-sm font-medium text-zinc-700">
+                      Group Code
+                    </Label>
+                    <Input
+                      id="groupCode"
+                      placeholder="Enter the group code"
+                      className="w-full"
+                    />
+                  </div>
+                </div>
               </div>
-              <div className="bg-yellow-50 rounded-lg p-4 flex flex-col items-center">
-                <div className="text-2xl font-bold text-yellow-700">{staticGroup.members[0].lastActivity}</div>
-                <div className="text-slate-600">Last Activity (Owner)</div>
+              <div className="flex justify-end mt-6">
+                <Button type="submit" className="w-full sm:w-auto">Join Group</Button>
               </div>
-            </div>
-          </div>
-        )}
+            </DialogContent>
+          </Dialog>
+        </div>
       </div>
+
+      <Card className="border border-zinc-200 shadow-sm rounded-xl overflow-hidden">
+        <div className="overflow-x-auto">
+          <Table>
+            <TableHeader>
+              <TableRow className="border-b border-zinc-200 bg-zinc-50/50">
+                <TableHead className="py-4 px-6 text-zinc-500 font-medium">Group Name</TableHead>
+                <TableHead className="py-4 px-6 text-zinc-500 font-medium">Members</TableHead>
+                <TableHead className="py-4 px-6 text-zinc-500 font-medium">Role</TableHead>
+                <TableHead className="py-4 px-6 text-zinc-500 font-medium">Created</TableHead>
+                <TableHead className="py-4 px-6 text-zinc-500 font-medium">Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {groups.map((group) => (
+                <TableRow key={group.id} className="border-b border-zinc-200 hover:bg-zinc-50/50 transition-colors">
+                  <TableCell className="py-4 px-6">
+                    <div className="flex items-center gap-3">
+                      <div className="h-8 w-8 bg-zinc-100 rounded-lg flex items-center justify-center">
+                        <FiUsers className="h-4 w-4 text-zinc-600" />
+                      </div>
+                      <span className="font-medium text-zinc-900">{group.name}</span>
+                    </div>
+                  </TableCell>
+                  <TableCell className="py-4 px-6 text-zinc-600">
+                    <div className="flex items-center gap-2">
+                      <FiUsers className="h-4 w-4" />
+                      {group.memberCount} members
+                    </div>
+                  </TableCell>
+                  <TableCell className="py-4 px-6">
+                    <div className="flex items-center gap-2">
+                      <FiStar className="h-4 w-4 text-zinc-600" />
+                      <span className="text-zinc-600">{group.userRole}</span>
+                    </div>
+                  </TableCell>
+                  <TableCell className="py-4 px-6">
+                    <div className="flex items-center gap-2 text-zinc-600">
+                      <FiCalendar className="h-4 w-4" />
+                      {group.createdAt}
+                    </div>
+                  </TableCell>
+                  <TableCell className="py-4 px-6">
+                    <Button variant="outline" size="sm" className="h-8">
+                      View Details
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+      </Card>
     </div>
   );
 } 
